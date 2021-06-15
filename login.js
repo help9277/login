@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Data = require('./module/emailschema');
+const bcrypt =require('bcryptjs');
 const app = express();
 app.use(express.static('public'));
 app.use(express.json());
@@ -20,7 +21,8 @@ app.set('view engine', 'ejs');
 app.get('/login', async (req,res)=>{
     const {email, password}= req.body;
    const check= await Data.findOne({email})
-   if(check){
+    const match= bcrypt.compare(password,check.password);
+   if(match){
      if(check.password===password)
      res.redirect('/home');
      else{
